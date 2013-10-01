@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:exposuresoftware="http://schemas.android.com/apk/res/com.exposuresoftware.xsandos"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/chalkboard" >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/board_chalk"
+        android:contentDescription="@string/desc_board" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:gravity="center_vertical" >
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="0"
+	            exposuresoftware:y="0"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_0_0" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="0"
+	            exposuresoftware:y="1"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_0_1" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="0"
+	            exposuresoftware:y="2"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_0_2" />
+	    </LinearLayout>
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:gravity="center_vertical" >
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="1"
+	            exposuresoftware:y="0"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_1_0" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="1"
+	            exposuresoftware:y="1"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_1_1" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="1"
+	            exposuresoftware:y="2"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_1_2" />
+	    </LinearLayout>
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:gravity="center_vertical" >
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="2"
+	            exposuresoftware:y="0"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"	            
+	            android:id="@+id/button_2_0" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="2"
+	            exposuresoftware:y="1"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_2_1" />
+	        <com.exposuresoftware.xsandos.ESCoordButton
+	            exposuresoftware:x="2"
+	            exposuresoftware:y="2"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:onClick="handleButtonForSpace"
+	            style="@style/ChalkButton"
+	            android:id="@+id/button_2_2" />
+	    </LinearLayout>
+	</LinearLayout>
+</FrameLayout>
