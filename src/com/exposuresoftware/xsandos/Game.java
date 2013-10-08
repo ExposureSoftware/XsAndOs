@@ -1,17 +1,21 @@
 package com.exposuresoftware.xsandos;
 
-import java.lang.reflect.Array;
-import java.util.List;
+import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.exposuresoftware.xsandos.GameBoard.Mark;
 
@@ -27,39 +31,45 @@ public class Game extends Activity {
 	GameBoard board = null;
 	int[][] buttons = new int[3][3];
 	
-	// TODO Add shake to clear
+	Toast toast_player_x = null, toast_player_o = null;
 	
+	// TODO Add shake to clear
+	// TODO Move switchPlayer() out of handleButtonForSpace(View)
+	
+	@SuppressLint("ShowToast")
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
+		Log.d( TAG, "Starting Game Activity" );
 		setContentView(R.layout.activity_game);
 		solo_player = getIntent().getExtras().getBoolean("solo");
 		chalkduster = Typeface.createFromAsset(getAssets(), 
         		"fonts/Chalkduster.ttf");
-		// TODO Show dialog to say what player starts.
 		board = new GameBoard(SIZE);
-		Log.d(TAG, "Game board created.");
-		// TODO Add setting for random or X starts
-		/*
-		Random randomGen = new Random();
-		if (randomGen.nextBoolean()) {
-			player = GameBoard.Mark.X;
-			Log.d(TAG, "Player X selected to go first.");
-		} else {
-			player = GameBoard.Mark.O;
-			Log.d(TAG, "Player O selected to go first.");
-			if (solo_player) {
-				computerPlayer();
-			}
-		}
-		*/
-		player = GameBoard.Mark.X;
+		Log.d(TAG, "Game board created.");		
+		this.toast_player_x = Toast.makeText(this, R.string.msg_player_one, Toast.LENGTH_SHORT);
+		this.toast_player_o = Toast.makeText(this, R.string.msg_player_two, Toast.LENGTH_SHORT);
 	}
 	
 	public void onResume() {
 		super.onResume();
 		Log.d( TAG,  "Building button ID array" );
 		buildButtonIds();
+		boolean random_start = PreferenceManager.getDefaultSharedPreferences( this )
+				.getBoolean( "pref_key_random_start", true ); 
+		Log.d( TAG, "Random starting player: " + Boolean.toString( random_start ) );
+		if ( random_start ) {
+			Random randomGen = new Random();
+			if (randomGen.nextBoolean()) {
+				player = GameBoard.Mark.X;
+				Log.d(TAG, "Player X selected to go first.");
+				toast_player_x.show();
+			} else {
+				Log.d(TAG, "Player O selected to go first.");
+				toast_player_o.show();
+				switchPlayer();
+			}
+		}
 	}
 	
 	private void buildButtonIds() {
@@ -87,32 +97,43 @@ public class Game extends Activity {
 			((Button) space).setText(player.toString());
 			space.setEnabled(false);
 		} else {
-			AlertDialog.Builder aBuilder = new AlertDialog.Builder(this);
-			aBuilder.setMessage(R.string.msg_new_game);
-			aBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent intentToRestart = getIntent();
-					startActivity(intentToRestart);
+			Typeface chalkduster = Typeface.createFromAsset(getAssets(), 
+	        		"fonts/Chalkduster.ttf");
+			final Dialog dialog = new Dialog(this, R.style.CleanDialog);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView( R.layout.dialog_base );
+			dialog.setCancelable( false );			
+			TextView title = (TextView) dialog.findViewById( R.id.dialog_header );
+			title.setTypeface(chalkduster);
+			((TextView) dialog.findViewById(R.id.dialog_message)).setTypeface(chalkduster);
+			Button ok_button = (Button) dialog.findViewById(R.id.dialog_new_game);
+			Button title_button = (Button) dialog.findViewById(R.id.dialog_title_screen);
+			ok_button.setTypeface( chalkduster );
+			title_button.setTypeface(chalkduster);
+			ok_button.setOnClickListener( new OnClickListener() {
+					public void onClick(View view) {
+						Log.d( TAG, "Restarting game" );
+						Intent intentToRestart = getIntent();
+						startActivity(intentToRestart);
+						dialog.dismiss();
+						finish();
+					}
+				});
+			title_button.setOnClickListener( new OnClickListener() {
+				public void onClick(View view) {
+					Log.d( TAG, "Returning to title" );
+					dialog.dismiss();
 					finish();
-				}
-			});
-			aBuilder.setNegativeButton(R.string.return_to_title, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();					
 				}
 			});
 			switch (board.gameState) {
 				case WIN:
-					aBuilder.setTitle("Player " + player.toString() + " wins!");
-					aBuilder.show();
+					title.setText("Player " + player.toString() + " wins!");
+					dialog.show();
 					break;
 				case DRAW:
-					aBuilder.setTitle("Game is a draw!");
-					aBuilder.show();
+					title.setText("Game is a draw!");
+					dialog.show();
 					break;
 				case IN_PROGRESS:
 			}
@@ -141,8 +162,6 @@ public class Game extends Activity {
 		if ( first_choice.winning || first_choice.counter ) {
 			Log.d( TAG, "Marking first choice: " + first_choice.x + "," + first_choice.y );
 			button = findViewById( buttons[first_choice.x][first_choice.y] );
-			//handleButtonForSpace( button );
-			//board.markSpace(first_choice.x, first_choice.y, player);
 		} else {
 			/*
 			 * Corners are crucial top-tier strategy. Once taken, the middle space
@@ -150,6 +169,7 @@ public class Game extends Activity {
 			 * space to use, if no win condition is found here it likely the game will
 			 * draw in any case.
 			 */
+			// BUG Not selecting winners first
 			Log.d( TAG, "Trying scheduled spaces" );
 			if ( findViewById( buttons[0][0] ).isEnabled() ) {
 				button = findViewById( buttons[0][0] );

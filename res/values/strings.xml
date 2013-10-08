@@ -8,10 +8,14 @@
     <string name="label_button_two_player">Two Players</string>
     <string name="label_activity_game">Game</string>
     <string name="desc_board">Game Board</string>
-    <string name="msg_player_one">Player One</string>
-    <string name="msg_player_two">Player Two</string>
+    <string name="msg_player_one">Player X</string>
+    <string name="msg_player_two">Player O</string>
     <string name="msg_new_game">Would you like to start a new game?</string>
     <string name="ok">OK</string>
     <string name="return_to_title">Title Screen</string>
+    <string name="pref_random_start">Random starting player</string>
+    <string name="pref_random_start_summ">If selected, the starting player will be selected at random for each game.</string>
+    <string name="pref_key_gameplay_settings">Gameplay</string>
+    <string name="label_activity_settings">Settings</string>
 
 </resources>

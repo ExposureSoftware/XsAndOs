@@ -22,5 +22,12 @@
         <item name="android:textSize">40sp</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="ChalkButtonNormal">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="CleanDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>        
+	</style>
 
 </resources>

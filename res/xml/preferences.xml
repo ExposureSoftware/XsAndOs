@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:key="pref_key_gameplay_settngs"
+        android:title="@string/pref_key_gameplay_settings" >
+	    <CheckBoxPreference
+	        android:key="pref_key_random_start"
+	        android:title="@string/pref_random_start"
+	        android:summary="@string/pref_random_start_summ"
+	        android:defaultValue="true" />
+	</PreferenceCategory>
+
+</PreferenceScreen>
