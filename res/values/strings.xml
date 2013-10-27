@@ -17,5 +17,9 @@
     <string name="pref_random_start_summ">If selected, the starting player will be selected at random for each game.</string>
     <string name="pref_key_gameplay_settings">Gameplay</string>
     <string name="label_activity_settings">Settings</string>
+    <string name="dialog_shake_header">Clear the Board?</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_game">Reset</string>
+    <string name="clear_board">Clear the board?</string>
 
 </resources>

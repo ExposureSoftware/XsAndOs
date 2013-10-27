@@ -5,8 +5,11 @@ import java.util.Random;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exposuresoftware.xsandos.GameBoard.Mark;
+import com.google.analytics.tracking.android.EasyTracker;
+
 
 public class Game extends Activity {
 	
@@ -31,7 +36,12 @@ public class Game extends Activity {
 	GameBoard board = null;
 	int[][] buttons = new int[3][3];
 	
+	private SensorManager sensorManager;
+	private ShakeEventListener sensorListener;
+	
 	Toast toast_player_x = null, toast_player_o = null;
+	
+	boolean dialog_up = false;
 	
 	// TODO Add shake to clear
 	// TODO Move switchPlayer() out of handleButtonForSpace(View)
@@ -45,16 +55,74 @@ public class Game extends Activity {
 		solo_player = getIntent().getExtras().getBoolean("solo");
 		chalkduster = Typeface.createFromAsset(getAssets(), 
         		"fonts/Chalkduster.ttf");
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	    sensorListener = new ShakeEventListener();   
+
+	    sensorListener.setOnShakeListener(new ShakeEventListener.OnShakeListener() {
+
+	      public void onShake() {
+	    	  if ( !dialog_up ) {
+		    	  	Typeface chalkduster = Typeface.createFromAsset(getAssets(), 
+			        		"fonts/Chalkduster.ttf");
+					final Dialog dialog = new Dialog(Game.this, R.style.CleanDialog);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView( R.layout.dialog_base );
+					dialog.setCancelable( false );			
+					TextView title = (TextView) dialog.findViewById( R.id.dialog_header );
+					title.setTypeface(chalkduster);
+					TextView message = 	(TextView) dialog.findViewById(R.id.dialog_message);
+					message.setTypeface(chalkduster);
+					Button ok_button = (Button) dialog.findViewById(R.id.dialog_new_game);
+					Button title_button = (Button) dialog.findViewById(R.id.dialog_title_screen);
+					ok_button.setTypeface( chalkduster );
+					title_button.setTypeface(chalkduster);
+					// Now, change what they say!
+					title.setText(R.string.dialog_shake_header);
+					ok_button.setText(R.string.new_game);
+					title_button.setText(R.string.cancel);
+					message.setText(R.string.clear_board);
+					ok_button.setOnClickListener( new OnClickListener() {
+							public void onClick(View view) {
+								Log.d( TAG, "Restarting game" );
+								Intent intentToRestart = getIntent();
+								startActivity(intentToRestart);
+								dialog.dismiss();
+								finish();
+							}
+						});
+					title_button.setOnClickListener( new OnClickListener() {
+						public void onClick(View view) {
+							Log.d( TAG, "Shake cancelled" );
+							dialog_up = false;
+							dialog.dismiss();
+						}
+					});
+					dialog.show();
+					dialog_up = true;
+	    	  }
+	      }
+	    });
 		board = new GameBoard(SIZE);
 		Log.d(TAG, "Game board created.");		
 		this.toast_player_x = Toast.makeText(this, R.string.msg_player_one, Toast.LENGTH_SHORT);
 		this.toast_player_o = Toast.makeText(this, R.string.msg_player_two, Toast.LENGTH_SHORT);
 	}
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+	
 	public void onResume() {
 		super.onResume();
 		Log.d( TAG,  "Building button ID array" );
 		buildButtonIds();
+		// Register shake listener
+		sensorManager.registerListener(sensorListener,
+		        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+		        SensorManager.SENSOR_DELAY_UI);
+		// TODO Make sure orientation change doesn't restart game with this!
 		boolean random_start = PreferenceManager.getDefaultSharedPreferences( this )
 				.getBoolean( "pref_key_random_start", true ); 
 		Log.d( TAG, "Random starting player: " + Boolean.toString( random_start ) );
@@ -70,6 +138,18 @@ public class Game extends Activity {
 				switchPlayer();
 			}
 		}
+	}
+	
+	@Override
+	public void onPause() {
+		sensorManager.unregisterListener(sensorListener);
+		super.onPause();
+	}
+	
+	@Override
+	public void onStop() {
+		EasyTracker.getInstance(this).activityStop(this);
+		super.onStop();
 	}
 	
 	private void buildButtonIds() {
@@ -138,7 +218,9 @@ public class Game extends Activity {
 				case IN_PROGRESS:
 			}
 		}
-		switchPlayer();
+		if ( board.gameState == GameBoard.State.IN_PROGRESS ) {
+			switchPlayer();
+		}
 	}
 	
 	private void switchPlayer() {

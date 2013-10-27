@@ -1,5 +1,7 @@
 package com.exposuresoftware.xsandos;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -27,6 +29,18 @@ public class MainMenu extends Activity {
         		"fonts/Chalkduster.ttf");
 		button_one_player.setTypeface(chalkduster);
 		button_two_player.setTypeface(chalkduster);
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 
 	@Override
