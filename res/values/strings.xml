@@ -21,5 +21,7 @@
     <string name="cancel">Cancel</string>
     <string name="new_game">Reset</string>
     <string name="clear_board">Clear the board?</string>
+    <string name="pref_shake_to_clear">Shake to Clear</string>
+    <string name="pref_shake_summ">If selected, will activate the shake gesture to clear the board.</string>
 
 </resources>

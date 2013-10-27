@@ -61,7 +61,8 @@ public class Game extends Activity {
 	    sensorListener.setOnShakeListener(new ShakeEventListener.OnShakeListener() {
 
 	      public void onShake() {
-	    	  if ( !dialog_up ) {
+	    	  if ( !dialog_up && PreferenceManager.getDefaultSharedPreferences( Game.this )
+	  				.getBoolean( "pref_key_shake_to_clear", true ) ) {
 		    	  	Typeface chalkduster = Typeface.createFromAsset(getAssets(), 
 			        		"fonts/Chalkduster.ttf");
 					final Dialog dialog = new Dialog(Game.this, R.style.CleanDialog);

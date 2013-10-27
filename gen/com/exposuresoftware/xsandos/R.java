@@ -96,6 +96,8 @@ containing a value of this type.
         public static final int pref_key_gameplay_settings=0x7f05000f;
         public static final int pref_random_start=0x7f05000d;
         public static final int pref_random_start_summ=0x7f05000e;
+        public static final int pref_shake_summ=0x7f050016;
+        public static final int pref_shake_to_clear=0x7f050015;
         public static final int return_to_title=0x7f05000c;
     }
     public static final class style {
