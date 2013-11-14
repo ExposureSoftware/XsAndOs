@@ -43,7 +43,6 @@ public class Game extends Activity {
 	
 	boolean dialog_up = false;
 	
-	// TODO Add shake to clear
 	// TODO Move switchPlayer() out of handleButtonForSpace(View)
 	
 	@SuppressLint("ShowToast")
@@ -123,7 +122,7 @@ public class Game extends Activity {
 		sensorManager.registerListener(sensorListener,
 		        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 		        SensorManager.SENSOR_DELAY_UI);
-		// TODO Make sure orientation change doesn't restart game with this!
+		Log.d( TAG, "Player is " + player );
 		boolean random_start = PreferenceManager.getDefaultSharedPreferences( this )
 				.getBoolean( "pref_key_random_start", true ); 
 		Log.d( TAG, "Random starting player: " + Boolean.toString( random_start ) );
@@ -139,6 +138,11 @@ public class Game extends Activity {
 				switchPlayer();
 			}
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		
 	}
 	
 	@Override
@@ -169,6 +173,7 @@ public class Game extends Activity {
 		
 		int x = 0, y = 0;
 		((Button) space).setTypeface(chalkduster);
+		((Button) space).setTextSize(90 * getResources().getDisplayMetrics().density);
 		x = ((ESCoordButton) space).x;
 		y = ((ESCoordButton) space).y;
 		Log.d( TAG, "Button pressed at " + Integer.toString(x) + "," + Integer.toString(y) 

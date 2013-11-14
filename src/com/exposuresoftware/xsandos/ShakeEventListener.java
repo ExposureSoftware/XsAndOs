@@ -42,7 +42,7 @@ public class ShakeEventListener implements SensorEventListener {
 		float x = event.values[SensorManager.DATA_X];
 		float y = event.values[SensorManager.DATA_Y];
 		float z = event.values[SensorManager.DATA_Z];
-		Log.d( TAG, "New position: " + x + ", " + y + ", " + z );
+		//Log.d( TAG, "New position: " + x + ", " + y + ", " + z );
 		
 		// Get the movement
 		// TODO Break out paper and see why this works!
@@ -72,6 +72,7 @@ public class ShakeEventListener implements SensorEventListener {
 					long totalDuration = eventOccuredTime - firstDirectionChangeTime;
 					if ( MAX_TOTAL_DURATION_OF_SHAKE > totalDuration ) {
 						// We have a shake!
+						Log.d( TAG, "Shake detected" );
 						shakeListener.onShake();
 						resetShakes();
 					}
